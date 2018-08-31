@@ -1,6 +1,6 @@
 lazy val buildSettings = Seq(
   organization := "com.dwolla.sbt",
-  name := "dwolla-base",
+  name := "sbt-dwolla-base",
   homepage := Some(url("https://github.com/Dwolla/sbt-dwolla-base")),
   description := "Dwolla base Scala settings",
   licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
@@ -38,5 +38,5 @@ lazy val bintraySettings = Seq(
   pomIncludeRepository := { _ ⇒ false }
 )
 
-lazy val `dwolla-base` = (project in file("."))
+lazy val `sbt-dwolla-base` = (project in file("."))
   .settings(buildSettings ++ bintraySettings ++ releaseSettings: _*)
