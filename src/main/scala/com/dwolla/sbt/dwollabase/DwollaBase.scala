@@ -11,7 +11,7 @@ object DwollaBase extends AutoPlugin {
     addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full),
     addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.2.1"),
     resolvers ++= Seq(
-      Resolver.bintrayRepo("Dwolla", "maven"),
+      Resolver.bintrayRepo("dwolla", "maven"),
       Resolver.sonatypeRepo("releases"),
     ),
     scalacOptions ++= Seq(

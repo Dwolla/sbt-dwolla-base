@@ -5,7 +5,9 @@ val app = project in file(".")
 TaskKey[Unit]("check") := {
   val scalaVersionValue = scalaVersion.value
   val scalacOptionsValue = scalacOptions.value
-  val expected = Seq(
+  val resolversValue = resolvers.value
+
+  val expectedScalacOptions = Seq(
     "-deprecation",
     "-encoding",
     "-explaintypes",
@@ -65,7 +67,18 @@ TaskKey[Unit]("check") := {
     )
   }
 
-  val missingItems = expected.flatMap { e ⇒
+  val expectedResolver = Resolver.bintrayRepo("dwolla", "maven")
+  val resolversError = if (resolversValue.contains(expectedResolver)) None else
+    Option(
+      s"""resolvers does not contain the expected values.
+         |
+         |  Expected: $expectedResolver
+         |
+         |  Found:    $resolversValue
+         |
+       """.stripMargin)
+
+  val missingItems = expectedScalacOptions.flatMap { e ⇒
     if (scalacOptionsValue.contains(e)) List.empty
     else List(e)
   }
@@ -87,12 +100,11 @@ TaskKey[Unit]("check") := {
       """.stripMargin)
   }
 
-  val allErrors: Seq[String] = Seq(scalaVersionError, scalacOptionsError).filter {
-    case Some(_) ⇒ true
-    case None ⇒ false
-  }.map {
-    case Some(msg) ⇒ s"Error: $msg"
-  }
+  val allErrors: Seq[String] = Seq(scalaVersionError, scalacOptionsError, resolversError)
+    .collect {
+      case Some(msg) ⇒ s"Error: $msg"
+    }
+
   if (allErrors.nonEmpty) sys.error(
     s"""${allErrors.size} failures detected:
        |
