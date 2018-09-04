@@ -19,6 +19,7 @@ lazy val releaseSettings = {
       inquireVersions,
       runClean,
       releaseStepCommandAndRemaining("^ test"),
+      releaseStepCommandAndRemaining("^ scripted"),
       setReleaseVersion,
       commitReleaseVersion,
       tagRelease,
@@ -40,3 +41,4 @@ lazy val bintraySettings = Seq(
 
 lazy val `sbt-dwolla-base` = (project in file("."))
   .settings(buildSettings ++ bintraySettings ++ releaseSettings: _*)
+  .enablePlugins(SbtPlugin)
