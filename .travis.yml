@@ -19,7 +19,7 @@ env:
     - SBT_VERSION="1.2.3"
 
 script:
-  - sbt "^^${SBT_VERSION}" test
+  - sbt "^^${SBT_VERSION}" test scripted
 
 before_deploy:
   - mkdir -p $HOME/.bintray
