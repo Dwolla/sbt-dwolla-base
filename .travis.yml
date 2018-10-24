@@ -16,7 +16,7 @@ env:
   global:
     secure: "rxxzxM5tEPSf2hhKjT7b1nMP+Ge2GDghwGCzR1T6dUhOctrR84PGheqQpNzHhVlMHPtnRYNIof7SWieX2xr6FpykeIXV13IjIHyaZ0c0mea0Zf1Iljbu+TZyT/ptRZhpqQPTmHbMNi/1TPC4BPCZRslUS4MeT7wm80vmJURJE/dWr8Ccqbb4t3dnT5wq381omnJD0WOiztUaoXJOvaidln1Tfnoj1lCLo0ENzwZDpKRGWxlE7aQoCEkLgIkvt5aG8aqFrbjD7Axmx3nZXXRoWHnHc2fLlqHek4OhAvm42kOOgzCZzAMQy3E6YedCdOdX9vUgKeKaVF3KCIbrWaSHaLcRJReRFL6/Ystu/0h5gs8FcFs3fGT0G+KM07ctTnRCo2+863Y23nfxwp4jacmrqWzl/XeMORCIankhgDqwC9YVTP9jd3u+HeabDHC/dqChvRk/FpKx1Gj9yJxE7guzlxMrON3Ra9Qv90WplbYCu1y1cx7RPHHqO7u/sINJ3LwHaq0aonhx3X6626F1MbM/24ouTIhGY23BVfZN6IXQgvV/6Hmtb96DBCEgJKj4Cl+pld91INal1u8mXLKRdy9uHFbgRmxS5/MSZJ7RBFUebNO3gC1BnGq5NXtBTLj+bh8tM4R/VwhoZPCmtkA27bLm1KTw8POA4ZIPl/i/x0Duf3k="
   matrix:
-    - SBT_VERSION="1.2.3"
+    - SBT_VERSION="1.2.6"
 
 script:
   - sbt "^^${SBT_VERSION}" test scripted
@@ -30,4 +30,4 @@ deploy:
     script: .travis/release.sh
     on:
       branch: master
-      condition: $SBT_VERSION == "1.2.3" && $(git log -n1 --format=format:"%an") != "Dwolla Bot"
+      condition: $SBT_VERSION == "1.2.6" && $(git log -n1 --format=format:"%an") != "Dwolla Bot"
