@@ -41,3 +41,12 @@ TaskKey[Unit]("check211") := {
        |${allErrors.mkString("\n")}
      """.stripMargin)
 }
+
+TaskKey[Boolean]("crossBuild") := {
+  val targetDir = target.value
+  val scalaBinaryValue = scalaBinaryVersion.value
+
+  val output = targetDir / scalaBinaryValue
+
+  output.createNewFile()
+}
