@@ -3,6 +3,7 @@ name := "scala 2.12 scalac options"
 val app = project in file(".")
 
 TaskKey[Unit]("check") := {
+  val scalaVersionValue = scalaVersion.value
   val scalacOptionsValue = scalacOptions.value
   val resolversValue = resolvers.value
 
@@ -53,6 +54,18 @@ TaskKey[Unit]("check") := {
     "-Ywarn-unused:patvars",
     "-Ywarn-unused:privates",
   )
+  val scalaVersionError = scalaVersionValue match {
+    case "2.12.7" ⇒ None
+    case _ ⇒ Option(
+      s"""scalaVersion does not contain the expected value.
+         |
+         |  Expected: 2.12.7
+         |
+         |  Found:    $scalaVersionValue
+         |
+      """.stripMargin
+    )
+  }
 
   val expectedResolver = Resolver.bintrayRepo("dwolla", "maven")
   val resolversError = if (resolversValue.contains(expectedResolver)) None else
@@ -87,7 +100,7 @@ TaskKey[Unit]("check") := {
       """.stripMargin)
   }
 
-  val allErrors: Seq[String] = Seq(scalacOptionsError, resolversError)
+  val allErrors: Seq[String] = Seq(scalaVersionError, scalacOptionsError, resolversError)
     .collect {
       case Some(msg) ⇒ s"Error: $msg"
     }
