@@ -71,5 +71,7 @@ object DwollaBase extends AutoPlugin {
     }),
     scalacOptions in (Compile, console) --= Seq("-Ywarn-unused:imports", "-Xfatal-warnings"),
     scalacOptions in Compile in Test -= "-Xfatal-warnings",
+    scalacOptions --= sys.props.get("idea.runid").map(_ => "-Xfatal-warnings"),
+    commands += ToggleFatalWarnings(),
   )
 }
