@@ -7,7 +7,7 @@ object DwollaBase extends AutoPlugin {
   override def trigger  = allRequirements
 
   override def buildSettings = Seq(
-    scalaVersion := "2.12.7",
+    scalaVersion := "2.12.8",
   )
 
   override def projectSettings = Seq(

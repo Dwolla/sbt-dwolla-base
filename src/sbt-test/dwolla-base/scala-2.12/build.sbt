@@ -1,11 +1,13 @@
 name := "scala 2.12 scalac options"
 
-val app = project in file(".")
+val subproject = project in file("subproject")
+
+val app = (project in file(".")).aggregate(subproject)
 
 TaskKey[Unit]("check") := {
-  val scalaVersionValue = scalaVersion.value
-  val scalacOptionsValue = scalacOptions.value
-  val resolversValue = resolvers.value
+  val scalaVersions = Seq("root" -> scalaVersion.value, "app" -> (app / scalaVersion).value, "subproject" -> (subproject / scalaVersion).value)
+  val scalacOptionsValue = Seq("root" -> scalacOptions.value, "app" -> (app / scalacOptions).value, "subproject" -> (subproject / scalacOptions).value)
+  val resolversValue = Seq("root" -> resolvers.value, "app" -> (app / resolvers).value, "subproject" -> (subproject / resolvers).value)
 
   val expectedScalacOptions = Seq(
     "-deprecation",
@@ -54,56 +56,58 @@ TaskKey[Unit]("check") := {
     "-Ywarn-unused:patvars",
     "-Ywarn-unused:privates",
   )
-  val scalaVersionError = scalaVersionValue match {
-    case "2.12.7" ⇒ None
-    case _ ⇒ Option(
-      s"""scalaVersion does not contain the expected value.
+  val scalaVersionErrors = scalaVersions.flatMap {
+    case (_, "2.12.8") ⇒ None
+    case (k, v) ⇒ Option(
+      s"""`$k / scalaVersion` does not contain the expected value.
          |
-         |  Expected: 2.12.7
+         |  Expected: 2.12.8
          |
-         |  Found:    $scalaVersionValue
+         |  Found:    $v
          |
-      """.stripMargin
+         |""".stripMargin
     )
   }
 
   val expectedResolver = Resolver.bintrayRepo("dwolla", "maven")
-  val resolversError = if (resolversValue.contains(expectedResolver)) None else
-    Option(
-      s"""resolvers does not contain the expected values.
+  val resolversError = resolversValue.flatMap {
+    case (_, v) if v.contains(expectedResolver) => None
+    case (k, v) => Option(
+      s"""`$k / resolvers` does not contain the expected values.
          |
          |  Expected: $expectedResolver
          |
-         |  Found:    $resolversValue
+         |  Found:    $v
          |
        """.stripMargin)
-
-  val missingItems = expectedScalacOptions.flatMap { e ⇒
-    if (scalacOptionsValue.contains(e)) List.empty
-    else List(e)
   }
 
-  val encodingIssue: List[String] = scalacOptionsValue.sliding(2).collect {
-    case "-encoding" :: encoding :: Nil if encoding != "utf-8" ⇒ s"""Invalid encoding "$encoding""""
-    case "-encoding" :: Nil ⇒ "missing encoding"
-  }.toList
-
-  val scalacOptionsError = if (missingItems.isEmpty && encodingIssue.isEmpty) None
-  else {
-    Option(
-      s"""scalacOptions does not contain the expected values.
-        |
-        |  Missing Options:     $missingItems
-        |
-        |  Encoding Issues:     $encodingIssue
-        |
-      """.stripMargin)
-  }
-
-  val allErrors: Seq[String] = Seq(scalaVersionError, scalacOptionsError, resolversError)
-    .collect {
-      case Some(msg) ⇒ s"Error: $msg"
+  val scalacOptionsError = scalacOptionsValue.flatMap { case (k, v) =>
+    val missingItems = expectedScalacOptions.flatMap { e ⇒
+      if (v.contains(e)) List.empty
+      else List(e)
     }
+
+    val encodingIssue: List[String] = v.sliding(2).collect {
+      case "-encoding" :: encoding :: Nil if encoding != "utf-8" ⇒ s"""Invalid encoding "$encoding""""
+      case "-encoding" :: Nil ⇒ "missing encoding"
+    }.toList
+
+    if (missingItems.isEmpty && encodingIssue.isEmpty) None
+    else {
+      Option(
+        s"""`$k / scalacOptions` does not contain the expected values.
+           |
+           |  Missing Options:     $missingItems
+           |
+           |  Encoding Issues:     $encodingIssue
+           |""".stripMargin)
+    }
+  }
+
+  val allErrors: Seq[String] =
+    (scalaVersionErrors ++ resolversError ++ scalacOptionsError)
+      .map(msg ⇒ s"Error: $msg")
 
   if (allErrors.nonEmpty) sys.error(
     s"""${allErrors.size} failures detected:
