@@ -1,14 +1,20 @@
 name := "Toggling -Xfatal-warnings on and off"
 
-val app = project in file(".")
+val subproject = project in file("subproject")
+
+val app = (project in file("."))
+    .aggregate(subproject)
 
 TaskKey[Unit]("fatalWarningsIsOn") := {
   val scalacOptionsValue = scalacOptions.value
+  val subprojectScalacOptionsValue = (scalacOptions in subproject).value
 
-  val scalacOptionsError = if (scalacOptionsValue.contains("-Xfatal-warnings")) None
-  else Option(s"""scalacOptions does not contain "-Xfatal-warnings".""")
+  val scalacOptionsError = Seq(scalacOptionsValue → "root", subprojectScalacOptionsValue → "subproject").map { case (v, k) ⇒
+    if (v.contains("-Xfatal-warnings")) None
+    else Option(s"""$k scalacOptions does not contain "-Xfatal-warnings", but it should.""")
+  }
 
-  val allErrors: Seq[String] = Seq(scalacOptionsError)
+  val allErrors: Seq[String] = scalacOptionsError
     .collect {
       case Some(msg) ⇒ s"Error: $msg"
     }
@@ -22,11 +28,14 @@ TaskKey[Unit]("fatalWarningsIsOn") := {
 
 TaskKey[Unit]("fatalWarningsIsOff") := {
   val scalacOptionsValue = scalacOptions.value
+  val subprojectScalacOptionsValue = (scalacOptions in subproject).value
 
-  val scalacOptionsError = if (!scalacOptionsValue.contains("-Xfatal-warnings")) None
-  else Option(s"""scalacOptions contains "-Xfatal-warnings".""")
+  val scalacOptionsError = Seq(scalacOptionsValue → "root", subprojectScalacOptionsValue → "subproject").map { case (v, k) ⇒
+    if (!v.contains("-Xfatal-warnings")) None
+    else Option(s"""$k scalacOptions contains "-Xfatal-warnings", but it should not.""")
+  }
 
-  val allErrors: Seq[String] = Seq(scalacOptionsError)
+  val allErrors: Seq[String] = scalacOptionsError
     .collect {
       case Some(msg) ⇒ s"Error: $msg"
     }
