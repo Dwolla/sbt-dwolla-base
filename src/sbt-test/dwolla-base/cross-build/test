@@ -1,7 +1,7 @@
 > clean
 
 # Check that different Scala binary versions have different options set
-> ++2.12.7 check212
+> ++2.12.8 check212
 > ++2.11.12 check211
 
 # Run +crossBuild to make sure the TravisCI plugin injected both Scala versions

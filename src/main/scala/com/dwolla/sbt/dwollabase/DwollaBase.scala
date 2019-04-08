@@ -7,7 +7,7 @@ object DwollaBase extends AutoPlugin {
   override def trigger  = allRequirements
 
   override def buildSettings = Seq(
-    scalaVersion := "2.12.7",
+    scalaVersion := "2.12.8",
   )
 
   override def projectSettings = Seq(
@@ -73,8 +73,8 @@ object DwollaBase extends AutoPlugin {
     scalacOptions in Compile in Test -= "-Xfatal-warnings",
     scalacOptions --= sys.props.get("idea.runid").map(_ => "-Xfatal-warnings"),
     commands ++= Seq(
-      ToggleScalacOption("toggleFatalWarnings", "-Xfatal-warnings", "Fatal warnings"),
-      ToggleScalacOption("toggleImplicitLogging", "-Xlog-implicits", "Implicit logging"),
+      ToggleScalacOption("toggleFatalWarnings", "-Xfatal-warnings"),
+      ToggleScalacOption("toggleImplicitLogging", "-Xlog-implicits"),
     ),
   )
 }

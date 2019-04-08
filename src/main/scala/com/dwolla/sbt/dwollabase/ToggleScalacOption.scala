@@ -2,26 +2,29 @@ package com.dwolla.sbt.dwollabase
 
 import sbt.Keys.scalacOptions
 import sbt._
+import sbt.internal._
 
 object ToggleScalacOption {
-  def apply(commandName: String, flag: String, friendlyName: String): Command =
-    Command.command(commandName) { state =>
-      val disableImplicitLogging = s"""set scalacOptions -= "$flag""""
-      val enableImplicitLogging = s"""set scalacOptions += "$flag""""
+  def apply(commandName: String, flag: String): Command =
+    Command.command(commandName) { state: State =>
+      val extracted = Project.extract(state)
 
-      Project.runTask(scalacOptions in Compile, state) match {
-        case None => state
-        case Some((_, Inc(_))) => state
-        case Some((s0, Value(options))) if options.contains(flag) =>
-          val s1 = Command.process(disableImplicitLogging, s0)
-          state.log.info(s"$friendlyName disabled")
-          s1
-
-        case Some((s0, Value(options))) if !options.contains(flag) =>
-          val s1 = Command.process(enableImplicitLogging, s0)
-          state.log.info(s"$friendlyName enabled")
-          s1
+      val adjust: Seq[String] ⇒ Seq[String] = Project.runTask(scalacOptions in Compile, state) match {
+        case Some((_, Value(options))) if options.contains(flag) ⇒ _.filterNot(_ == flag)
+        case _ ⇒ flag +: _
       }
-    }
 
+      val updateSettings =
+        Project.definitions(extracted.structure, true, scalacOptions.key)(Show.fromToString)
+          .map(_ / scalacOptions)
+          .flatMap { task =>
+            Project.runTask(task, state)
+              .collect {
+                case (_, Value(options)) ⇒
+                  task := adjust(options)
+              }
+          }
+
+      SessionSettings.reapply(Project.setAll(extracted, updateSettings), state)
+    }
 }

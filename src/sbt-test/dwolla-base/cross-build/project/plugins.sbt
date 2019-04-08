@@ -9,4 +9,4 @@
 libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "1.2.3"
 )
-addSbtPlugin("com.dwijnand" % "sbt-travisci" % "1.1.3")
+addSbtPlugin("com.dwijnand" % "sbt-travisci" % "1.2.0")
