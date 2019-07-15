@@ -22,10 +22,15 @@ object DwollaBase extends AutoPlugin {
                                       scalaBinVersion: String): Seq[String] =
     options.filterNot(_ == "-Ywarn-unused:params") ++ Option("-Ywarn-unused:explicits").filter(_ => scalaBinVersion == "2.12")
 
+  private def addCompilerPluginBeforeVersion13(dependency: ModuleID): Setting[Seq[ModuleID]] =
+    libraryDependencies ++= CrossVersion.partialVersion(scalaVersion.value).collect {
+      case (2, x) if x < 13 => compilerPlugin(dependency)
+    }
+
   override def projectSettings = Seq(
-    addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.8"),
-    addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full),
-    addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.2.4"),
+    addCompilerPlugin("org.typelevel" % "kind-projector" % "0.10.3" cross CrossVersion.binary),
+    addCompilerPluginBeforeVersion13("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full),
+    addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.0"),
     resolvers ++= Seq(
       Resolver.bintrayRepo("dwolla", "maven"),
       Resolver.sonatypeRepo("releases"),

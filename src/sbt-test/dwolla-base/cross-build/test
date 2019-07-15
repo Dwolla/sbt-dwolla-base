@@ -1,9 +1,11 @@
 > clean
 
+# The existence check should look for the last Scala version specified in .travisci.yml
 > writeScalaVersion
 $ exists target/2.12.7
 
 # Check that different Scala binary versions have different options set
+> ++2.13.0 check213
 > ++2.12.8 check212
 > ++2.11.12 check211
 
@@ -13,6 +15,7 @@ $ exists target/2.12.7
 # Check that the task was executed for both Scala versions
 $ exists target/2.11
 $ exists target/2.12
+$ exists target/2.13
 
 # Run +uniqueVersions to make sure the TravisCI plugin can inject different Scala versions
 > +writeScalaVersion
@@ -22,3 +25,4 @@ $ exists target/2.11.11
 $ exists target/2.11.12
 $ exists target/2.12.7
 $ exists target/2.12.8
+$ exists target/2.13.0
