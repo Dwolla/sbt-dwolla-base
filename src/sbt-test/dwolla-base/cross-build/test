@@ -1,5 +1,8 @@
 > clean
 
+> writeScalaVersion
+$ exists target/2.12.7
+
 # Check that different Scala binary versions have different options set
 > ++2.12.8 check212
 > ++2.11.12 check211
@@ -10,3 +13,12 @@
 # Check that the task was executed for both Scala versions
 $ exists target/2.11
 $ exists target/2.12
+
+# Run +uniqueVersions to make sure the TravisCI plugin can inject different Scala versions
+> +writeScalaVersion
+
+# Check that the task was executed for both Scala versions
+$ exists target/2.11.11
+$ exists target/2.11.12
+$ exists target/2.12.7
+$ exists target/2.12.8

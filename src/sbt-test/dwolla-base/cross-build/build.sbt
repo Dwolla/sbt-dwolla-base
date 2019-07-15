@@ -50,3 +50,9 @@ TaskKey[Boolean]("crossBuild") := {
 
   output.createNewFile()
 }
+
+TaskKey[Boolean]("writeScalaVersion") := {
+  val output = target.value / scalaVersion.value
+
+  output.createNewFile()
+}

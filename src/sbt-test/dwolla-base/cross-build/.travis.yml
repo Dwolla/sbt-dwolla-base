@@ -1,7 +1,9 @@
 language: scala
 
 scala:
+  - 2.11.11
   - 2.11.12
   - 2.12.8
+  - 2.12.7 # this should be different from the version set in the plugin to test that the default can be overridden
 
-jdk: oraclejdk8
+jdk: openjdk8

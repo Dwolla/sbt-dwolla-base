@@ -7,7 +7,9 @@ object DwollaBase extends AutoPlugin {
   override def trigger  = allRequirements
 
   override def buildSettings = Seq(
-    scalaVersion := "2.12.8",
+    scalaVersion := {
+      if ((baseDirectory.value / ".travis.yml").exists()) (crossScalaVersions in Global).value.last else "2.12.8"
+    },
   )
 
   override def projectSettings = Seq(
