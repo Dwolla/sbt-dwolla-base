@@ -7,6 +7,7 @@ lazy val buildSettings = Seq(
   crossSbtVersions := Vector("1.2.3"),
   sbtPlugin := true,
   startYear := Option(2018),
+  addSbtPlugin("io.github.davidgregory084" % "sbt-tpolecat" % "0.1.7"),
 )
 
 lazy val releaseSettings = {
