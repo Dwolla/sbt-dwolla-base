@@ -4,7 +4,6 @@ lazy val buildSettings = Seq(
   homepage := Some(url("https://github.com/Dwolla/sbt-dwolla-base")),
   description := "Dwolla base Scala settings",
   licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
-  crossSbtVersions := Vector("1.2.3"),
   sbtPlugin := true,
   startYear := Option(2018),
   addSbtPlugin("io.github.davidgregory084" % "sbt-tpolecat" % "0.1.7"),
