@@ -12,8 +12,15 @@ object DwollaBase extends AutoPlugin {
 
   override def buildSettings = Seq(
     scalaVersion := {
-      if ((baseDirectory.value / ".travis.yml").exists()) (crossScalaVersions in Global).value.last else "2.12.8"
-    },
+      Def.settingDyn {
+        if (SettingKey[Boolean]("isTravisBuild", "Flag indicating whether the current build is running under Travis").?.value.isDefined)
+          Def.settingDyn {
+            Def.setting((crossScalaVersions in ThisBuild).value.last)
+          }
+        else
+          Def.setting("2.12.11")
+      }
+    }.value,
   )
 
   /** See https://github.com/tpolecat/tpolecat.github.io/issues/7 and https://github.com/scala/bug/issues/11175
@@ -28,9 +35,9 @@ object DwollaBase extends AutoPlugin {
     }
 
   override def projectSettings = Seq(
-    addCompilerPlugin("org.typelevel" % "kind-projector" % "0.10.3" cross CrossVersion.binary),
+    addCompilerPlugin("org.typelevel" % "kind-projector" % "0.11.0" cross CrossVersion.full),
     addCompilerPluginBeforeVersion13("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full),
-    addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.0"),
+    addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
     resolvers ++= Seq(
       Resolver.bintrayRepo("dwolla", "maven"),
       Resolver.sonatypeRepo("releases"),
