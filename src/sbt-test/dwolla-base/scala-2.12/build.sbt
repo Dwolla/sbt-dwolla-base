@@ -55,11 +55,11 @@ TaskKey[Unit]("check") := {
     "-Ywarn-unused:privates",
   )
   val scalaVersionErrors = scalaVersions.flatMap {
-    case (_, "2.12.8") ⇒ None
+    case (_, "2.12.11") ⇒ None
     case (k, v) ⇒ Option(
       s"""`$k / scalaVersion` does not contain the expected value.
          |
-         |  Expected: 2.12.8
+         |  Expected: 2.12.11
          |
          |  Found:    $v
          |

@@ -12,8 +12,15 @@ object DwollaBase extends AutoPlugin {
 
   override def buildSettings = Seq(
     scalaVersion := {
-      if ((baseDirectory.value / ".travis.yml").exists()) (crossScalaVersions in Global).value.last else "2.12.8"
-    },
+      Def.settingDyn {
+        if (SettingKey[Boolean]("isTravisBuild", "Flag indicating whether the current build is running under Travis").?.value.isDefined)
+          Def.settingDyn {
+            Def.setting((crossScalaVersions in ThisBuild).value.last)
+          }
+        else
+          Def.setting("2.12.11")
+      }
+    }.value,
   )
 
   /** See https://github.com/tpolecat/tpolecat.github.io/issues/7 and https://github.com/scala/bug/issues/11175
