@@ -28,9 +28,9 @@ object DwollaBase extends AutoPlugin {
     }
 
   override def projectSettings = Seq(
-    addCompilerPlugin("org.typelevel" % "kind-projector" % "0.10.3" cross CrossVersion.binary),
+    addCompilerPlugin("org.typelevel" % "kind-projector" % "0.11.0" cross CrossVersion.full),
     addCompilerPluginBeforeVersion13("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full),
-    addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.0"),
+    addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
     resolvers ++= Seq(
       Resolver.bintrayRepo("dwolla", "maven"),
       Resolver.sonatypeRepo("releases"),
