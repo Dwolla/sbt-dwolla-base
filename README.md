@@ -1,3 +1,5 @@
+***This plugin is no longer used (or available, probably, since Bintray shut down). You might consider using [sbt-tpolecat](https://github.com/DavidGregory084/sbt-tpolecat) or [sbt-typelevel](https://github.com/typelevel/sbt-typelevel) instead.***
+
 # Dwolla sbt Base Settings
 
 [![Travis](https://img.shields.io/travis/Dwolla/sbt-dwolla-base.svg?style=flat-square)](https://travis-ci.org/Dwolla/sbt-dwolla-base)
